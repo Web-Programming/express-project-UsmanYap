@@ -5,8 +5,11 @@ var cors = require("cors");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+//konfigurasi passport
+const passport = require("passport");
 //load mongodb db connection
 require("./app_server/models/db");
+require("./app_server/configs/passport"); //load file config
 var app = express();
 
 // view engine setup
@@ -22,8 +25,7 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/bootstrap", express.static(__dirname + "/node_modules/bootstrap/dist/css"));
-app.use("/public", express.static(__dirname + "/images/"));
+app.use(passport.initialize());
 
 //Set Routes
 var indexRouter = require("./app_server/routes/index");
@@ -37,6 +39,23 @@ app.use(cors());
 app.use("/", indexRouter);
 app.use("/users", usersRouter); //route ke model users
 app.use("/todo", todoRouter);
+
+//letakkan di bawah Use Routes
+app.use("/todo", (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  next();
+});
+
+//Catching errors
+//Agar muncul erro jika user belum login
+app.use((err, req, res, next) => {
+  if (err.name === "UnauthorizedError") {
+    res.status(401).json({
+      message: err.name + ": " + err.message,
+    });
+  }
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
