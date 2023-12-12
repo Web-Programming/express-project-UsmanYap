@@ -16,6 +16,6 @@ router.get("/", todoController.index); //list todos
 router.route("/insert").post(auth, todoController.insert); //insert todos
 router.route("/update/:id").post(auth, todoController.insert); //mengupdate todos
 router.get("/show/:id", todoController.show); //show detail todos by id
-router.route("/delete/:id").post(auth, todoController.destroy); //delete todos by id
+router.route("/delete/:id").delete(auth, todoController.destroy); //delete todos by id
 
 module.exports = router;
