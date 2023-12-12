@@ -2,8 +2,6 @@ import { Inject, Injectable } from '@angular/core';
 import { BROWSER_STORAGE } from './storage';
 import { DataService } from './data.service';
 import { User } from './user';
-import { Authresponse } from './authresponse';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,23 +9,33 @@ import { Observable } from 'rxjs';
 export class AuthenticationService {
   constructor(
     @Inject(BROWSER_STORAGE) private storage: Storage,
-    private dataservice: DataService
+    private dataService: DataService
   ) {}
 
+  //untuk mengambil token
   public getToken(): any {
-    return this.storage.getItem('APP-token');
+    return this.storage.getItem('app-token');
   }
+
+  //untuk menyimpan token
   public saveToken(token: string): void {
-    this.storage.setItem('APP-token', token);
+    this.storage.setItem('app-token', token);
   }
+
   //untuk kebutuhan register
   public register(user: User): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.dataservice.register(user).subscribe((response) => {
-        this.saveToken(response.token);
+      this.dataService.register(user).subscribe({
+        next: (response) => {
+          resolve(this.saveToken(response.token));
+        },
+        error: (e) => {
+          reject(e);
+        },
+        complete: () => {
+          console.log('register completed');
+        },
       });
     });
-
-    //.then((authResp: Authresponse) => this.saveToken(authResp.token))
   }
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { AuthenticationService } from '../authentication.service';
+
 import { Router } from '@angular/router';
+import { AuthenticationService } from '../authentication.service';
 
 @Component({
   selector: 'app-register',
@@ -8,17 +9,18 @@ import { Router } from '@angular/router';
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
-  public formError: string = '';
+  constructor(
+    private router: Router,
+    private authenticationService: AuthenticationService
+  ) {}
+
   public credentials = {
     name: '',
     email: '',
     password: '',
   };
 
-  constructor(
-    private router: Router,
-    private authenticationService: AuthenticationService
-  ) {}
+  public formError: string = '';
 
   public onRegisterSubmit(): void {
     this.formError = '';
@@ -32,10 +34,19 @@ export class RegisterComponent {
       this.doRegister();
     }
   }
-  private doRegister(): void {
+
+  public doRegister(): void {
     this.authenticationService
       .register(this.credentials)
-      .then(() => this.router.navigateByUrl('/todo'))
-      .catch((message) => (this.formError = message));
+      .then(() => {
+        this.router.navigateByUrl('/todo');
+      })
+      .catch((error) => {
+        if (error.error?.code == 11000) {
+          this.formError = 'Email already registered';
+        } else {
+          this.formError = error?.message;
+        }
+      });
   }
 }
