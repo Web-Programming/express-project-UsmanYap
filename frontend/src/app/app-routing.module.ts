@@ -3,13 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { TodoComponent } from './todo/todo.component';
-import { HomeComponent } from './home/home.component';
+
+import { AuthGuard } from './auth-guard.guard';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'todo', component: TodoComponent },
-  { path: 'home', component: HomeComponent },
+  { path: 'todo', component: TodoComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({

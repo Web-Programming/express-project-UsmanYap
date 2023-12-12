@@ -2,37 +2,37 @@
   <h1 class="m-5">Application</h1>
   <!-- <app-login></app-login>
 <app-register></app-register> -->
-  <nav>
-    <a
-      class="button mr-3"
-      routerLink="/login"
-      routerLinkActive="activebutton"
-      ariaCurrentWhenActive="page"
-      >Login</a
-    >
-    <a
-      class="button mr-3"
-      routerLink="/register"
-      routerLinkActive="activebutton"
-      ariaCurrentWhenActive="page"
-      >Register</a
-    >
-    |
-    <a
-      class="button"
-      routerLink="/todo"
-      routerLinkActive="activebutton"
-      ariaCurrentWhenActive="page"
-      >Todo</a
-    >
-    |
-    <a
-      class="button"
-      routerLink="/home"
-      routerLinkActive="activebutton"
-      ariaCurrentWhenActive="page"
-      >Home</a
-    >
+  <nav class="my-3 text-center">
+    <div *ngIf="isLoggedIn(); then loggedIn; else loggedOut"></div>
+    <ng-template #loggedIn>
+      <a
+        class="button mr-3"
+        routerLink="/todo"
+        routerLinkActive="activebutton"
+        ariaCurrentWhenActive="page"
+        >Todo</a
+      >
+      <a class="button mr-3" (click)="doLogout()">Logout</a>
+    </ng-template>
+
+    <ng-template #loggedOut>
+      <a
+        class="button mr-3"
+        routerLink="/login"
+        routerLinkActive="activebutton"
+        ariaCurrentWhenActive="page"
+        >Login</a
+      >
+      <a
+        class="button mr-3"
+        routerLink="/register"
+        routerLinkActive="activebutton"
+        ariaCurrentWhenActive="page"
+        >Register</a
+      >
+    </ng-template>
+
+    {{ getUsername() }}
   </nav>
   <router-outlet></router-outlet>
 </div>
